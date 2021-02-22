@@ -1,5 +1,6 @@
 package net.silthus.slimits.ui;
 
+import com.danifoldi.messagelib.core.MessageBuilder;
 import com.github.stefvanschie.inventoryframework.Gui;
 import com.github.stefvanschie.inventoryframework.GuiItem;
 import com.github.stefvanschie.inventoryframework.pane.PaginatedPane;
@@ -22,15 +23,17 @@ public class LimitsGUI {
 
     private final LimitsPlugin plugin;
     private final LimitsManager limitsManager;
+    private final MessageBuilder<String> messageBuilder;
 
-    public LimitsGUI(LimitsPlugin plugin, LimitsManager limitsManager) {
+    public LimitsGUI(LimitsPlugin plugin, LimitsManager limitsManager, MessageBuilder<String> messageBuilder) {
         this.plugin = plugin;
         this.limitsManager = limitsManager;
+        this.messageBuilder = messageBuilder;
     }
 
     public Gui showLimits(Player player) {
 
-        Gui gui = new Gui(plugin, 6, "Your Limits");
+        Gui gui = new Gui(plugin, 6, messageBuilder.getBase("gui.title").execute());
         PaginatedPane page = new PaginatedPane(0, 0, 9, 5);
 
         PlayerBlockPlacementLimit playerLimit = limitsManager.getPlayerLimit(player);
@@ -53,12 +56,13 @@ public class LimitsGUI {
                 color = ChatColor.YELLOW;
             }
 
-            itemMeta.setDisplayName(sb.append(ChatColor.BOLD).append(color).append(material.name()).append(": ")
-                    .append(ChatColor.RESET).append(ChatColor.AQUA)
-                    .append(count).append(ChatColor.GREEN).append("/").append(ChatColor.AQUA).append(limit)
-                    .append(ChatColor.YELLOW).append(" blocks placed.")
-                    .toString());
-            itemMeta.setLore(Arrays.asList(ChatColor.GRAY + "" + ChatColor.BOLD + "Click: " + ChatColor.RESET + ChatColor.GRAY + "show placed block locations."));
+            itemMeta.setDisplayName(messageBuilder.getBase("gui.limitItem")
+                    .usingTemplate("material", material.name())
+                    .usingTemplate("warningColor", color.toString())
+                    .usingTemplate("count", String.valueOf(count))
+                    .usingTemplate("limit", String.valueOf(limit))
+                    .execute());
+            itemMeta.setLore(Arrays.asList(messageBuilder.getBase("gui.showLocations").execute()));
             item.setItemMeta(itemMeta);
 
             GuiItem guiItem = new GuiItem(item, click -> {
@@ -73,13 +77,13 @@ public class LimitsGUI {
                     ItemStack locationItem = new ItemStack(material, 1);
                     ItemMeta locationItemMeta = locationItem.getItemMeta();
 
-                    locationItemMeta.setDisplayName(ChatColor.YELLOW + material.name());
-                    locationItemMeta.setLore(Arrays.asList(
-                            ChatColor.GRAY + "x: " + ChatColor.BOLD + location.getBlockX(),
-                            ChatColor.GRAY + "y: " + ChatColor.BOLD + location.getBlockY(),
-                            ChatColor.GRAY + "z: " + ChatColor.BOLD + location.getBlockZ(),
-                            ChatColor.GRAY + "world: " + ChatColor.BOLD + location.getWorld().getName()
-                    ));
+                    locationItemMeta.setDisplayName(messageBuilder.getBase("gui.locationItemName").usingTemplate("material", material.name()).execute());
+                    locationItemMeta.setLore(Collections.singletonList(messageBuilder.getBase("gui.locationItemLore")
+                            .usingTemplate("x", String.valueOf(location.getBlockX()))
+                            .usingTemplate("y", String.valueOf(location.getBlockY()))
+                            .usingTemplate("z", String.valueOf(location.getBlockZ()))
+                            .usingTemplate("world", location.getWorld().getName())
+                            .execute()));
 
                     locationItem.setItemMeta(locationItemMeta);
                     locationItems.add(locationItem);
@@ -112,11 +116,11 @@ public class LimitsGUI {
         return gui;
     }
 
-    public static StaticPane getBackButton(Gui gui, Pane current, Pane parent) {
+    public StaticPane getBackButton(Gui gui, Pane current, Pane parent) {
         StaticPane back = new StaticPane(0, 5, 1, 1);
         ItemStack itemStack = new ItemStack(Material.BARRIER);
         ItemMeta itemMeta = itemStack.getItemMeta();
-        itemMeta.setDisplayName(ChatColor.RED + "Go Back");
+        itemMeta.setDisplayName(messageBuilder.getBase("gui.back").execute());
         itemStack.setItemMeta(itemMeta);
         back.addItem(new GuiItem(itemStack, click -> {
             click.setCancelled(true);

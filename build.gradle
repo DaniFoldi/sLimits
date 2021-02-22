@@ -91,6 +91,8 @@ dependencies {
     implementation 'co.aikar:acf-paper:0.5.0-SNAPSHOT'
     implementation 'com.github.stefvanschie.inventoryframework:IF:0.5.19'
     implementation 'org.bstats:bstats-bukkit:1.7'
+    implementation 'com.github.DaniFoldi.messagelib:yaml:1.0.0-ALPHA'
+    implementation 'com.github.DaniFoldi.messagelib:build:1.0.0-ALPHA'
 
     //Test dependencies
     testImplementation 'org.junit.jupiter:junit-jupiter:5.6.2'
@@ -115,6 +117,7 @@ shadowJar {
         include(dependency('com.github.stefvanschie.inventoryframework:'))
         include(dependency('net.silthus:slib:'))
         include(dependency('org.bstats::'))
+        include(dependency('com.DaniFoldi.messagelib::'))
     }
     relocate 'co.aikar.commands', "${packageName}.acf"
     relocate 'co.aikar.locales', "${packageName}.locales"

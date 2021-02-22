@@ -1,10 +1,10 @@
 package net.silthus.slimits.limits;
 
+import com.danifoldi.messagelib.core.MessageBuilder;
 import lombok.Getter;
 import net.silthus.slimits.LimitsConfig;
 import net.silthus.slimits.LimitsManager;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
@@ -22,9 +22,11 @@ public class BlockPlacementLimit implements Listener {
 
     @Getter
     private final LimitsManager limitsManager;
+    private final MessageBuilder<String> messageBuilder;
 
-    public BlockPlacementLimit(LimitsManager limitsManager) {
+    public BlockPlacementLimit(LimitsManager limitsManager, MessageBuilder<String> messageBuilder) {
         this.limitsManager = limitsManager;
+        this.messageBuilder = messageBuilder;
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
@@ -36,12 +38,10 @@ public class BlockPlacementLimit implements Listener {
 
         Material blockType = event.getBlock().getType();
         if (playerLimit.hasReachedLimit(blockType)) {
-            event.getPlayer().sendMessage(
-                    ChatColor.DARK_RED
-                            + "You reached your limit of "
-                            + playerLimit.getLimit(blockType).orElse(0)
-                            + " for placing "
-                            + blockType.name());
+            event.getPlayer().sendMessage(messageBuilder.getBase("event.limitReachead")
+                    .usingTemplate("limit", String.valueOf(playerLimit.getLimit(blockType).orElse(0)))
+                    .usingTemplate("material", blockType.name())
+            .execute());
             event.setCancelled(true);
             return;
         }
@@ -63,13 +63,11 @@ public class BlockPlacementLimit implements Listener {
             int placedBlockAmount = playerLimit.addBlock(block);
             getLimitsManager().savePlayerLimits(player);
 
-            player.sendMessage(ChatColor.AQUA
-                    + "You placed "
-                    + placedBlockAmount
-                    + "/"
-                    + limit
-                    + " of "
-                    + blockType.name());
+            player.sendMessage(messageBuilder.getBase("event.blockPlaced")
+            .usingTemplate("count", String.valueOf(placedBlockAmount))
+            .usingTemplate("limit", String.valueOf(limit))
+            .usingTemplate("material", blockType.name())
+            .execute());
         });
     }
 
@@ -84,14 +82,14 @@ public class BlockPlacementLimit implements Listener {
 
         LimitsConfig.BlockPlacementConfig blockConfig = getLimitsManager().getPluginConfig().getBlockConfig();
         if (blockConfig.isBlockLimitedBlockDestruction()) {
-            event.getPlayer().sendMessage(ChatColor.RED + "This limited block was placed by " + owner.getName() + ". You cannot destroy it.");
+            event.getPlayer().sendMessage(messageBuilder.getBase("event.removeOtherFail").usingTemplate("player", owner.getName()).execute());
             event.setCancelled(true);
             return;
         } else if (blockConfig.isDeleteBlocksDestroyedByOthers()) {
             PlayerBlockPlacementLimit playerLimit = getLimitsManager().getPlayerLimit(owner);
             playerLimit.removeBlock(event.getBlock());
             getLimitsManager().savePlayerLimits(owner);
-            event.getPlayer().sendMessage(ChatColor.GRAY + "You destroyed a limited block from " + owner.getName() + ".");
+            event.getPlayer().sendMessage(messageBuilder.getBase("event.removeOtherSuccess").usingTemplate("player", owner.getName()).execute());
         }
     }
 
@@ -108,13 +106,11 @@ public class BlockPlacementLimit implements Listener {
             int newCount = playerLimit.removeBlock(event.getBlock());
             getLimitsManager().savePlayerLimits(event.getPlayer());
 
-            event.getPlayer().sendMessage(ChatColor.AQUA
-                    + "You removed a placed block. You placed "
-                    + newCount
-                    + "/"
-                    + limit
-                    + " of "
-                    + event.getBlock().getType().name());
+            event.getPlayer().sendMessage(messageBuilder.getBase("event.blockRemoved")
+            .usingTemplate("count", String.valueOf(newCount))
+            .usingTemplate("limit", String.valueOf(limit))
+            .usingTemplate("material", event.getBlock().getType().name())
+            .execute());
         });
     }
 }

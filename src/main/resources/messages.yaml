@@ -1,0 +1,29 @@
+limits:
+  list: {player} "ChatColor.BOLD + "" + ChatColor.DARK_PURPLE ---=== ChatColor.YELLOW Your Block Placement Limits  ChatColor.DARK_PURPLE ===---"
+  listEntry: {material} {placed} {limit} "sb.append(ChatColor.BOLD).append(ChatColor.GREEN).append(material.name()).append(": ").append(ChatColor.RESET).append(ChatColor.AQUA).append(playerLimit.getCount(material)).append(ChatColor.GREEN).append("/").append(ChatColor.AQUA).append(limit).append(ChatColor.YELLOW).append(" blocks placed.")"
+  locate: {material} "ChatColor.BOLD + "" + ChatColor.DARK_PURPLE ---=== ChatColor.YELLOW Your placed  material.name()  blocks ChatColor.DARK_PURPLE ===---"
+  locateBlock {world} {x} {y} {z} "messages.add(ChatColor.YELLOW + "x: " + ChatColor.GREEN + location.getBlockX()+ ChatColor.YELLOW + " y: " + ChatColor.GREEN + location.getBlockY()+ ChatColor.YELLOW + " z: " + ChatColor.GREEN + location.getBlockZ()+ ChatColor.GRAY + " world: " + location.getWorld().getName()"
+event:
+  blockPlaced: {count} {limit} {material} "ChatColor.AQUA+ "You placed "+ placedBlockAmount+ "/"+ limit+ " of "+ blockType.name()
+  blockRemoved: {count} {limit} {material} "ChatColor.AQUA+ "You removed a placed block. You placed "+ newCount+ "/"+ limit+ " of "+ event.getBlock().getType().name()
+  limitReached: {material} {limit} "ChatColor.DARK_RED+ "You reached your limit of "+ playerLimit.getLimit(blockType).orElse(0)+ " for placing "+ blockType.name()"
+  removeOtherFail: {player} "ChatColor.RED + "This limited block was placed by " + owner.getName() + ". You cannot destroy it."
+  removeOtherSuccess: {player} "ChatColor.GRAY + "You destroyed a limited block from " + owner.getName() + "."
+gui:
+  title: "Your Limits"
+  back: ChatColor.RED + "Go Back"
+  showLocations: "ChatColor.GRAY + "" + ChatColor.BOLD + "Click: " + ChatColor.RESET + ChatColor.GRAY + "show placed block locations."
+  limitItem: {warningColor} {material} {count} {limit} "sb.append(ChatColor.BOLD).append(color).append(material.name()).append(": ")
+                                 .append(ChatColor.RESET).append(ChatColor.AQUA)
+                                 .append(count).append(ChatColor.GREEN).append("/").append(ChatColor.AQUA).append(limit)
+                                                                                         .append(ChatColor.YELLOW).append(" blocks placed.")
+  locationItemName: {material} ChatColor.YELLOW + material.name()
+  locationItemLore: |-
+    {world} {x} {y} {z}
+    ChatColor.GRAY + "x: " + ChatColor.BOLD + location.getBlockX(),
+    ChatColor.GRAY + "y: " + ChatColor.BOLD + location.getBlockY(),
+    ChatColor.GRAY + "z: " + ChatColor.BOLD + location.getBlockZ(),
+    ChatColor.GRAY + "world: " + ChatColor.BOLD + location.getWorld().getName()
+command:
+  playerOnly: "This command can only be executed as a player."
+  reload: "ChatColor.YELLOW + "Reloaded all limit configs."

@@ -1,7 +1,13 @@
 package net.silthus.slimits.commands;
 
 import co.aikar.commands.BaseCommand;
-import co.aikar.commands.annotation.*;
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandPermission;
+import co.aikar.commands.annotation.Default;
+import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Subcommand;
+import com.danifoldi.messagelib.core.MessageBuilder;
+import com.danifoldi.messagelib.yaml.YamlMessageProvider;
 import lombok.Getter;
 import net.silthus.slimits.LimitsManager;
 import net.silthus.slimits.limits.PlayerBlockPlacementLimit;
@@ -22,10 +28,12 @@ public class LimitsCommand extends BaseCommand {
     private final LimitsManager limitsManager;
     @Getter
     private final LimitsGUI gui;
+    private final MessageBuilder<String> messageBuilder;
 
-    public LimitsCommand(LimitsManager limitsManager, LimitsGUI gui) {
+    public LimitsCommand(LimitsManager limitsManager, LimitsGUI gui, MessageBuilder<String> messageBuilder) {
         this.limitsManager = limitsManager;
         this.gui = gui;
+        this.messageBuilder = messageBuilder;
     }
 
     @Default
@@ -33,18 +41,18 @@ public class LimitsCommand extends BaseCommand {
     @Description("Lists all of your or another players limits.")
     public void listLimits(Player player) {
 
+        player.sendMessage(messageBuilder.getBase("limits.list").usingTemplate("player", player.getName()).execute());
         player.sendMessage(ChatColor.BOLD + "" + ChatColor.DARK_PURPLE + "---=== " + ChatColor.YELLOW + "Your Block Placement Limits " + ChatColor.DARK_PURPLE + "===---");
 
         PlayerBlockPlacementLimit playerLimit = getLimitsManager().getPlayerLimit(player);
         List<String> messages = new ArrayList<>();
 
         playerLimit.getLimits().forEach((material, limit) -> {
-            StringBuilder sb = new StringBuilder();
-            messages.add(sb.append(ChatColor.BOLD).append(ChatColor.GREEN).append(material.name()).append(": ")
-                    .append(ChatColor.RESET).append(ChatColor.AQUA)
-                    .append(playerLimit.getCount(material)).append(ChatColor.GREEN).append("/").append(ChatColor.AQUA).append(limit)
-                    .append(ChatColor.YELLOW).append(" blocks placed.")
-                    .toString());
+            messages.add(messageBuilder.getBase("limits.listEntry")
+                    .usingTemplate("materialName", material.name())
+                    .usingTemplate("placed", String.valueOf(playerLimit.getCount(material)))
+                    .usingTemplate("limit", String.valueOf(limit))
+                    .execute());
         });
 
         player.sendMessage(messages.toArray(new String[0]));
@@ -55,19 +63,20 @@ public class LimitsCommand extends BaseCommand {
     public void listLocations(Material material) {
 
         if (!getCurrentCommandIssuer().isPlayer()) {
-            throw new CommandException("This command can only be executed as a player.");
+            throw new CommandException(messageBuilder.getBase("command.playerOnly").execute());
         }
 
-        getCurrentCommandIssuer().sendMessage(ChatColor.BOLD + "" + ChatColor.DARK_PURPLE + "---=== " + ChatColor.YELLOW + "Your placed " + material.name() + " blocks" + ChatColor.DARK_PURPLE + "===---");
+        getCurrentCommandIssuer().sendMessage(messageBuilder.getBase("limits.locate").usingTemplate("material", material.name()).execute());
         List<String> messages = new ArrayList<>();
 
         List<Location> locations = getLimitsManager().getPlayerLimit(getCurrentCommandIssuer().getIssuer()).getLocations(material);
         locations.forEach(location -> {
-            messages.add(ChatColor.YELLOW + "x: " + ChatColor.GREEN + location.getBlockX()
-                    + ChatColor.YELLOW + " y: " + ChatColor.GREEN + location.getBlockY()
-                    + ChatColor.YELLOW + " z: " + ChatColor.GREEN + location.getBlockZ()
-                    + ChatColor.GRAY + " world: " + location.getWorld().getName()
-            );
+            messages.add(messageBuilder.getBase("limits.locateBlock")
+                    .usingTemplate("x", String.valueOf(location.getBlockX()))
+                    .usingTemplate("y", String.valueOf(location.getBlockY()))
+                    .usingTemplate("z", String.valueOf(location.getBlockZ()))
+                    .usingTemplate("world", location.getWorld().getName())
+                    .execute());
         });
 
         ((Player) getCurrentCommandIssuer().getIssuer()).sendMessage(messages.toArray(new String[0]));
@@ -86,6 +95,6 @@ public class LimitsCommand extends BaseCommand {
     public void reload() {
 
         getLimitsManager().reload();
-        getCurrentCommandIssuer().sendMessage(ChatColor.YELLOW + "Reloaded all limit configs.");
+        getCurrentCommandIssuer().sendMessage(messageBuilder.getBase("command.reload").execute());
     }
 }

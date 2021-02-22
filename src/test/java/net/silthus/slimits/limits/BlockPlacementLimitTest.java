@@ -3,6 +3,10 @@ package net.silthus.slimits.limits;
 import be.seeseemelk.mockbukkit.MockBukkit;
 import be.seeseemelk.mockbukkit.ServerMock;
 import be.seeseemelk.mockbukkit.entity.PlayerMock;
+import com.danifoldi.messagelib.core.MessageBuilder;
+import com.danifoldi.messagelib.messageprovider.MessageProvider;
+import com.danifoldi.messagelib.templateprocessor.TemplateProcessor;
+import com.danifoldi.messagelib.yaml.YamlMessageProvider;
 import net.silthus.slimits.Constants;
 import net.silthus.slimits.LimitsManager;
 import net.silthus.slimits.LimitsPlugin;
@@ -19,7 +23,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -52,11 +58,19 @@ class BlockPlacementLimitTest {
         BlockPlacementLimitConfig config = new BlockPlacementLimitConfig(configPath);
         config.load();
 
-        limit = new BlockPlacementLimit(limitsManager);
-        plugin.registerEvents(limit);
+        try {
+            MessageProvider<String> messageProvider = new YamlMessageProvider(Paths.get("src/test/resources", "messages.yaml"));
+            MessageBuilder<String> messageBuilder = new MessageBuilder<>(messageProvider, TemplateProcessor.bracket());
 
-        player = server.addPlayer();
-        player.addAttachment(plugin, Constants.PERMISSION_PREFIX + "test", true);
+            limit = new BlockPlacementLimit(limitsManager, messageBuilder);
+            plugin.registerEvents(limit);
+
+            player = server.addPlayer();
+            player.addAttachment(plugin, Constants.PERMISSION_PREFIX + "test", true);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new AssertionError();
+        }
     }
 
     @Test

@@ -1,5 +1,6 @@
 package net.silthus.slimits;
 
+import com.danifoldi.messagelib.core.MessageBuilder;
 import lombok.Getter;
 import net.silthus.slib.config.ConfigUtil;
 import net.silthus.slimits.api.LimitsStorage;
@@ -31,10 +32,10 @@ public class LimitsManager implements Listener {
 
     private LimitsStorage storage;
 
-    public LimitsManager(LimitsPlugin plugin, LimitsConfig config) {
+    public LimitsManager(LimitsPlugin plugin, LimitsConfig config, MessageBuilder<String> messageBuilder) {
         this.plugin = plugin;
         this.pluginConfig = config;
-        this.blockPlacementLimit = new BlockPlacementLimit(this);
+        this.blockPlacementLimit = new BlockPlacementLimit(this, messageBuilder);
 
         plugin.getMetrics().ifPresent(metrics -> {
             metrics.addCustomChart(new Metrics.SingleLineChart("loaded_limits", limitConfigs::size));
