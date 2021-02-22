@@ -17,6 +17,9 @@ import org.bukkit.plugin.java.JavaPluginLoader;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 
@@ -24,6 +27,7 @@ import java.util.Optional;
 public class LimitsPlugin extends BasePlugin implements Listener {
 
     private static final int BSTATS_ID = 7979;
+    private static final String MESSAGE_FILE = "messages.yaml";
 
     public static String PLUGIN_PATH;
 
@@ -55,7 +59,14 @@ public class LimitsPlugin extends BasePlugin implements Listener {
         PLUGIN_PATH = getDataFolder().getAbsolutePath();
 
         try {
-            MessageProvider<String> messageProvider = new YamlMessageProvider(Paths.get(PLUGIN_PATH, "messages.yaml"));
+            Path messageFile = getDataFolder().toPath().resolve(MESSAGE_FILE);
+            if (Files.notExists(messageFile)) {
+                try (InputStream stream = getClass().getResourceAsStream(String.format("/%s", MESSAGE_FILE))) {
+                    Files.copy(stream, messageFile);
+                }
+            }
+
+            MessageProvider<String> messageProvider = new YamlMessageProvider(messageFile);
             this.messageBuilder = new MessageBuilder<>(messageProvider, TemplateProcessor.bracket());
         } catch (IOException e) {
             System.out.println("File not found:" + e.getMessage());

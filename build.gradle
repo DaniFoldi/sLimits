@@ -75,7 +75,7 @@ repositories {
 
     //Add your repositories here
     maven { url = "https://repo.aikar.co/content/groups/aikar/" }
-    maven { url 'https://jitpack.io' }
+    maven { url = 'https://jitpack.io' }
 
     maven { url = 'https://repo.codemc.org/repository/maven-public' }
 }
@@ -115,16 +115,22 @@ shadowJar {
         include(dependency('de.exlll:configlib-bukkit:'))
         include(dependency('co.aikar:acf-paper:'))
         include(dependency('com.github.stefvanschie.inventoryframework:'))
+        include(dependency('org.bstats:'))
+        include(dependency('com.github.DaniFoldi.messagelib:build:'))
+        include(dependency('com.github.DaniFoldi.messagelib:yaml:'))
+        include(dependency('com.amihaiemil.web:eo-yaml:'))
         include(dependency('net.silthus:slib:'))
-        include(dependency('org.bstats::'))
-        include(dependency('com.DaniFoldi.messagelib::'))
     }
+
+    minimize()
     relocate 'co.aikar.commands', "${packageName}.acf"
     relocate 'co.aikar.locales', "${packageName}.locales"
     relocate 'de.exlll.configlib', "${packageName}.configlib"
     relocate 'com.github.stefvanschie.inventoryframework', "${packageName}.inventoryframework"
     relocate 'net.silthus.slib', "${packageName}.slib"
     relocate 'org.bstats', "${packageName}.bstats"
+    relocate 'com.danifoldi.messagelib', "${packageName}.messagelib"
+    relocate 'com.amihaiemil.eoyaml', "${packageName}.eoyaml"
 }
 
 tasks.build.dependsOn(shadowJar)
