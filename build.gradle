@@ -125,6 +125,7 @@ shadowJar {
     relocate 'com.github.stefvanschie.inventoryframework', "${packageName}.inventoryframework"
     relocate 'net.silthus.slib', "${packageName}.slib"
     relocate 'org.bstats', "${packageName}.bstats"
+    relocate 'com.github.danifoldi.messagelib', "${packageName}.messagelib"
 }
 
 tasks.build.dependsOn(shadowJar)

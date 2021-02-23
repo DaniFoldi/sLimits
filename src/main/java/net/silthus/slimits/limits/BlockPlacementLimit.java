@@ -5,6 +5,7 @@ import lombok.Getter;
 import net.silthus.slimits.LimitsConfig;
 import net.silthus.slimits.LimitsManager;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
@@ -40,7 +41,7 @@ public class BlockPlacementLimit implements Listener {
         if (playerLimit.hasReachedLimit(blockType)) {
             event.getPlayer().sendMessage(messageBuilder.getBase("event.limitReachead")
                     .usingTemplate("limit", String.valueOf(playerLimit.getLimit(blockType).orElse(0)))
-                    .usingTemplate("material", blockType.name())
+                    .usingTemplate("material", messageBuilder.getBase("materialNames." + blockType.name()).execute())
             .execute());
             event.setCancelled(true);
             return;
@@ -63,11 +64,22 @@ public class BlockPlacementLimit implements Listener {
             int placedBlockAmount = playerLimit.addBlock(block);
             getLimitsManager().savePlayerLimits(player);
 
+            double usage = placedBlockAmount * 100.0 / limit * 100.0;
+            ChatColor color = ChatColor.GREEN;
+            if (usage >= 95) {
+                color = ChatColor.RED;
+            } else if (usage >= 80) {
+                color = ChatColor.GOLD;
+            } else if (usage >= 50) {
+                color = ChatColor.YELLOW;
+            }
+
             player.sendMessage(messageBuilder.getBase("event.blockPlaced")
-            .usingTemplate("count", String.valueOf(placedBlockAmount))
-            .usingTemplate("limit", String.valueOf(limit))
-            .usingTemplate("material", blockType.name())
-            .execute());
+                .usingTemplate("color", color.toString())
+                .usingTemplate("count", String.valueOf(placedBlockAmount))
+                .usingTemplate("limit", String.valueOf(limit))
+                .usingTemplate("material", messageBuilder.getBase("materialNames." + blockType.name()).execute())
+                .execute());
         });
     }
 
@@ -106,11 +118,22 @@ public class BlockPlacementLimit implements Listener {
             int newCount = playerLimit.removeBlock(event.getBlock());
             getLimitsManager().savePlayerLimits(event.getPlayer());
 
+            double usage = newCount * 100.0 / limit * 100.0;
+            ChatColor color = ChatColor.GREEN;
+            if (usage >= 95) {
+                color = ChatColor.RED;
+            } else if (usage >= 80) {
+                color = ChatColor.GOLD;
+            } else if (usage >= 50) {
+                color = ChatColor.YELLOW;
+            }
+
             event.getPlayer().sendMessage(messageBuilder.getBase("event.blockRemoved")
-            .usingTemplate("count", String.valueOf(newCount))
-            .usingTemplate("limit", String.valueOf(limit))
-            .usingTemplate("material", event.getBlock().getType().name())
-            .execute());
+                .usingTemplate("color", color.toString())
+                .usingTemplate("count", String.valueOf(newCount))
+                .usingTemplate("limit", String.valueOf(limit))
+                .usingTemplate("material", messageBuilder.getBase("materialNames." + event.getBlock().getType().name()).execute())
+                .execute());
         });
     }
 }

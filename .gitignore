@@ -204,3 +204,5 @@ dist
 .yarn/build-state.yml
 .pnp.*
 /src/test/resources/plugin.yml
+
+*.DS_Store

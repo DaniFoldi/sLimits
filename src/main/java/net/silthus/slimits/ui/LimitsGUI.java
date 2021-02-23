@@ -52,13 +52,15 @@ public class LimitsGUI {
             ChatColor color = ChatColor.GREEN;
             if (usage >= 95) {
                 color = ChatColor.RED;
-            } else if (usage > 80) {
+            } else if (usage >= 80) {
+                color = ChatColor.GOLD;
+            } else if (usage >= 50) {
                 color = ChatColor.YELLOW;
             }
 
             itemMeta.setDisplayName(messageBuilder.getBase("gui.limitItem")
-                    .usingTemplate("material", material.name())
-                    .usingTemplate("warningColor", color.toString())
+                    .usingTemplate("material", messageBuilder.getBase("materialNames." + material.name()).execute())
+                    .usingTemplate("color", color.toString())
                     .usingTemplate("count", String.valueOf(count))
                     .usingTemplate("limit", String.valueOf(limit))
                     .execute());
@@ -77,12 +79,12 @@ public class LimitsGUI {
                     ItemStack locationItem = new ItemStack(material, 1);
                     ItemMeta locationItemMeta = locationItem.getItemMeta();
 
-                    locationItemMeta.setDisplayName(messageBuilder.getBase("gui.locationItemName").usingTemplate("material", material.name()).execute());
+                    locationItemMeta.setDisplayName(messageBuilder.getBase("gui.locationItemName").usingTemplate("material", messageBuilder.getBase("materialNames." + material.name()).execute()).execute());
                     locationItemMeta.setLore(Collections.singletonList(messageBuilder.getBase("gui.locationItemLore")
                             .usingTemplate("x", String.valueOf(location.getBlockX()))
                             .usingTemplate("y", String.valueOf(location.getBlockY()))
                             .usingTemplate("z", String.valueOf(location.getBlockZ()))
-                            .usingTemplate("world", location.getWorld().getName())
+                            .usingTemplate("world", messageBuilder.getBase("worldNames." + location.getWorld().getName()).execute())
                             .execute()));
 
                     locationItem.setItemMeta(locationItemMeta);

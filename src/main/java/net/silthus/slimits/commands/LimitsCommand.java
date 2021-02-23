@@ -42,15 +42,26 @@ public class LimitsCommand extends BaseCommand {
     public void listLimits(Player player) {
 
         player.sendMessage(messageBuilder.getBase("limits.list").usingTemplate("player", player.getName()).execute());
-        player.sendMessage(ChatColor.BOLD + "" + ChatColor.DARK_PURPLE + "---=== " + ChatColor.YELLOW + "Your Block Placement Limits " + ChatColor.DARK_PURPLE + "===---");
 
         PlayerBlockPlacementLimit playerLimit = getLimitsManager().getPlayerLimit(player);
         List<String> messages = new ArrayList<>();
 
         playerLimit.getLimits().forEach((material, limit) -> {
+            int count = playerLimit.getCount(material);
+            double usage = count * 100.0 / limit * 100.0;
+            ChatColor color = ChatColor.GREEN;
+            if (usage >= 95) {
+                color = ChatColor.RED;
+            } else if (usage >= 80) {
+                color = ChatColor.GOLD;
+            } else if (usage >= 50) {
+                color = ChatColor.YELLOW;
+            }
+
             messages.add(messageBuilder.getBase("limits.listEntry")
-                    .usingTemplate("materialName", material.name())
-                    .usingTemplate("placed", String.valueOf(playerLimit.getCount(material)))
+                    .usingTemplate("color", color.toString())
+                    .usingTemplate("material", messageBuilder.getBase("materialNames." + material.name()).execute())
+                    .usingTemplate("count", String.valueOf(count))
                     .usingTemplate("limit", String.valueOf(limit))
                     .execute());
         });
@@ -75,7 +86,7 @@ public class LimitsCommand extends BaseCommand {
                     .usingTemplate("x", String.valueOf(location.getBlockX()))
                     .usingTemplate("y", String.valueOf(location.getBlockY()))
                     .usingTemplate("z", String.valueOf(location.getBlockZ()))
-                    .usingTemplate("world", location.getWorld().getName())
+                    .usingTemplate("world", messageBuilder.getBase("worldNames." + location.getWorld().getName()).execute())
                     .execute());
         });
 
