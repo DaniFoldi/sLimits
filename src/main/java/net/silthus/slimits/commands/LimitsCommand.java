@@ -7,7 +7,6 @@ import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
 import com.danifoldi.messagelib.core.MessageBuilder;
-import com.danifoldi.messagelib.yaml.YamlMessageProvider;
 import lombok.Getter;
 import net.silthus.slimits.LimitsManager;
 import net.silthus.slimits.limits.PlayerBlockPlacementLimit;
