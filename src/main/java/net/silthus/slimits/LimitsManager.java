@@ -35,7 +35,7 @@ public class LimitsManager implements Listener {
 
     private LimitsStorage storage;
 
-    public LimitsManager(LimitsPlugin plugin, LimitsConfig config, MessageBuilder<String> messageBuilder) {
+    public LimitsManager(LimitsPlugin plugin, LimitsConfig config, MessageBuilder<String, String> messageBuilder) {
         this.plugin = plugin;
         this.pluginConfig = config;
         this.blockPlacementLimit = new BlockPlacementLimit(this, messageBuilder);

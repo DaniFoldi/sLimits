@@ -14,6 +14,7 @@ import net.silthus.slimits.ui.LimitsGUI;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.command.CommandException;
 import org.bukkit.entity.Player;
 
@@ -27,9 +28,9 @@ public class LimitsCommand extends BaseCommand {
     private final LimitsManager limitsManager;
     @Getter
     private final LimitsGUI gui;
-    private final MessageBuilder<String> messageBuilder;
+    private final MessageBuilder<String, String> messageBuilder;
 
-    public LimitsCommand(LimitsManager limitsManager, LimitsGUI gui, MessageBuilder<String> messageBuilder) {
+    public LimitsCommand(LimitsManager limitsManager, LimitsGUI gui, MessageBuilder<String, String> messageBuilder) {
         this.limitsManager = limitsManager;
         this.gui = gui;
         this.messageBuilder = messageBuilder;
@@ -57,13 +58,32 @@ public class LimitsCommand extends BaseCommand {
                 color = ChatColor.YELLOW;
             }
 
-            messages.add(messageBuilder.getBase("limits.listEntry")
+            final String finalColor = color.toString();
+            final String finalMaterial = messageBuilder.getBase("materialNames." + material.name()).execute();
+            final String finalCount = String.valueOf(count);
+            final String finalLimit = String.valueOf(limit);
+            final String finalMessage = messageBuilder.getBase("limits.listEntry")
+                    .usingTemplate("material", finalMaterial)
+                    .usingTemplate("color", finalColor)
+                    .usingTemplate("count", finalCount)
+                    .usingTemplate("limit", finalLimit)
+                    .execute();
+
+            System.out.println(finalColor);
+            System.out.println(finalMaterial);
+            System.out.println(finalCount);
+            System.out.println(finalLimit);
+            System.out.println(finalMessage);
+            messages.add(finalMessage);
+            /*messages.add(messageBuilder.getBase("limits.listEntry")
                     .usingTemplate("color", color.toString())
                     .usingTemplate("material", messageBuilder.getBase("materialNames." + material.name()).execute())
                     .usingTemplate("count", String.valueOf(count))
                     .usingTemplate("limit", String.valueOf(limit))
-                    .execute());
+                    .execute());*/
         });
+
+        System.out.println(messages);
 
         player.sendMessage(messages.toArray(new String[0]));
     }
@@ -81,11 +101,16 @@ public class LimitsCommand extends BaseCommand {
 
         List<Location> locations = getLimitsManager().getPlayerLimit(getCurrentCommandIssuer().getIssuer()).getLocations(material);
         locations.forEach(location -> {
+            final World world = location.getWorld();
+            assert world != null;
+            final String worldName = messageBuilder.getBase("worldNames." + world.getName()).execute();
+            System.out.println(worldName);
+            System.out.println(world);
             messages.add(messageBuilder.getBase("limits.locateBlock")
                     .usingTemplate("x", String.valueOf(location.getBlockX()))
                     .usingTemplate("y", String.valueOf(location.getBlockY()))
                     .usingTemplate("z", String.valueOf(location.getBlockZ()))
-                    .usingTemplate("world", messageBuilder.getBase("worldNames." + location.getWorld().getName()).execute())
+                    .usingTemplate("world", worldName)
                     .execute());
         });
 

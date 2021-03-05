@@ -28,9 +28,9 @@ public class LimitsGUI {
 
     private final LimitsPlugin plugin;
     private final LimitsManager limitsManager;
-    private final MessageBuilder<String> messageBuilder;
+    private final MessageBuilder<String, String> messageBuilder;
 
-    public LimitsGUI(LimitsPlugin plugin, LimitsManager limitsManager, MessageBuilder<String> messageBuilder) {
+    public LimitsGUI(LimitsPlugin plugin, LimitsManager limitsManager, MessageBuilder<String, String> messageBuilder) {
         this.plugin = plugin;
         this.limitsManager = limitsManager;
         this.messageBuilder = messageBuilder;

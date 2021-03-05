@@ -2,6 +2,7 @@ package net.silthus.slimits;
 
 import co.aikar.commands.PaperCommandManager;
 import com.danifoldi.messagelib.core.MessageBuilder;
+import com.danifoldi.messagelib.core.SimpleMessageBuilder;
 import com.danifoldi.messagelib.messageprovider.MessageProvider;
 import com.danifoldi.messagelib.templateprocessor.TemplateProcessor;
 import com.danifoldi.messagelib.yaml.YamlMessageProvider;
@@ -36,7 +37,7 @@ public class LimitsPlugin extends BasePlugin implements Listener {
     private LimitsGUI gui;
     private PaperCommandManager commandManager;
     private Metrics metrics;
-    private MessageBuilder<String> messageBuilder;
+    private MessageBuilder<String, String> messageBuilder;
 
     public LimitsPlugin() {
         metrics = new Metrics(this, BSTATS_ID);
@@ -66,7 +67,7 @@ public class LimitsPlugin extends BasePlugin implements Listener {
             }
 
             MessageProvider<String> messageProvider = new YamlMessageProvider(messageFile);
-            this.messageBuilder = new MessageBuilder<>(messageProvider, TemplateProcessor.bracket());
+            this.messageBuilder = new SimpleMessageBuilder<>(messageProvider, TemplateProcessor.bracket());
         } catch (IOException e) {
             System.out.println("File not found:" + e.getMessage());
             e.printStackTrace();

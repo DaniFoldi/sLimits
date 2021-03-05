@@ -23,9 +23,9 @@ public class BlockPlacementLimit implements Listener {
 
     @Getter
     private final LimitsManager limitsManager;
-    private final MessageBuilder<String> messageBuilder;
+    private final MessageBuilder<String, String> messageBuilder;
 
-    public BlockPlacementLimit(LimitsManager limitsManager, MessageBuilder<String> messageBuilder) {
+    public BlockPlacementLimit(LimitsManager limitsManager, MessageBuilder<String, String> messageBuilder) {
         this.limitsManager = limitsManager;
         this.messageBuilder = messageBuilder;
     }
