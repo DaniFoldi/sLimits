@@ -1,28 +1,28 @@
 limits:
-  list: '§7§l---=== §6Blokk lehelyezési limit §7===---'
-  listEntry: '§7§o{material}§r » §r{color}{count}§7/§5{limit} §7lehelyezett blokk'
-  locate: '§7§l---=== §6Lehelyezett {material} blokkjaid §7===---'
-  locateBlock: '§6x §7 {x}, §6y §7{y}, §6z §7{z}, §6világ §7{world}'
+  list: '&7&l---=== &6Blokk lehelyezési limit &7===---'
+  listEntry: '&7&o{material}&r » &r{color}{count}&7/&5{limit} &7lehelyezett blokk'
+  locate: '&7&l---=== &6Lehelyezett {material} blokkjaid &7===---'
+  locateBlock: '&6x &7 {x}, &6y &7{y}, &6z &7{z}, &6világ &7{world}'
 event:
-  blockPlaced: '§7Lehelyeztél egy {material} blokkot, §r{color}{count}§7/§5{limit}§7.'
-  blockRemoved: '§7Kiütöttél egy {material} blokkot, §r{color}{count}§7/§5{limit}§7.'
-  limitReached: '§cElérted a maximálisan lehelyezhető {material} blokkok számát - {limit}.'
-  removeOtherFail: '§cEzt a blokkot {player} helyezte le, nem ütheted ki.'
-  removeOtherSuccess: '§7Kiütötted {player} egy blokkját.'
+  blockPlaced: '&7Lehelyeztél egy {material} blokkot, &r{color}{count}&7/&5{limit}&7.'
+  blockRemoved: '&7Kiütöttél egy {material} blokkot, &r{color}{count}&7/&5{limit}&7.'
+  limitReached: '&cElérted a maximálisan lehelyezhető {material} blokkok számát - {limit}.'
+  removeOtherFail: '&cEzt a blokkot {player} helyezte le, nem ütheted ki.'
+  removeOtherSuccess: '&7Kiütötted {player} egy blokkját.'
 gui:
   title: 'Lehelyezési limitjeid'
-  back: '§cVissza'
-  showLocations: '§6§lKattintás » §r§7Lehelyezett blokkok pozíciójának mutatása'
-  limitItem: '§6{material} » §r{color}{count}§7/§5{limit} §7lehelyezett blokk.'
-  locationItemName: '§6{material}'
+  back: '&cVissza'
+  showLocations: '&6&lKattintás » &r&7Lehelyezett blokkok pozíciójának mutatása'
+  limitItem: '&6{material} » &r{color}{count}&7/&5{limit} &7lehelyezett blokk.'
+  locationItemName: '&6{material}'
   locationItemLore: |-
-    §7x: §l{x}
-    §7y: §l{y}
-    §7z: §l{z}
-    §7világ: §l{world}
+    &7x: &l{x}
+    &7y: &l{y}
+    &7z: &l{z}
+    &7világ: &l{world}
 command:
   playerOnly: 'Ezt a parancsot csak játékos tudja végrehajtani.'
-  reload: '§eConfig újratöltve.'
+  reload: '&eConfig újratöltve.'
 worldNames:
   world_x101: '101x101-es telkek'
   world_x55: '55x55-ös telkek'
