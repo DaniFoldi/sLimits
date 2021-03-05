@@ -52,7 +52,7 @@ public class LimitsGUI {
 
             ItemMeta itemMeta = item.getItemMeta();
             int count = playerLimit.getCount(material);
-            double usage = count * 100.0 / limit * 100.0;
+            double usage = count * 100.0 / (limit * 100.0);
 
             ChatColor color = ChatColor.GREEN;
             if (usage >= 95) {

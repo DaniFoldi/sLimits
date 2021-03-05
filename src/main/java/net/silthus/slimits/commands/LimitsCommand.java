@@ -48,7 +48,7 @@ public class LimitsCommand extends BaseCommand {
 
         playerLimit.getLimits().forEach((material, limit) -> {
             int count = playerLimit.getCount(material);
-            double usage = count * 100.0 / limit * 100.0;
+            double usage = count * 100.0 / (limit * 100.0);
             ChatColor color = ChatColor.GREEN;
             if (usage >= 95) {
                 color = ChatColor.RED;
@@ -69,18 +69,7 @@ public class LimitsCommand extends BaseCommand {
                     .usingTemplate("limit", finalLimit)
                     .execute();
 
-            System.out.println(finalColor);
-            System.out.println(finalMaterial);
-            System.out.println(finalCount);
-            System.out.println(finalLimit);
-            System.out.println(finalMessage);
             messages.add(finalMessage);
-            /*messages.add(messageBuilder.getBase("limits.listEntry")
-                    .usingTemplate("color", color.toString())
-                    .usingTemplate("material", messageBuilder.getBase("materialNames." + material.name()).execute())
-                    .usingTemplate("count", String.valueOf(count))
-                    .usingTemplate("limit", String.valueOf(limit))
-                    .execute());*/
         });
 
         System.out.println(messages);
@@ -104,8 +93,6 @@ public class LimitsCommand extends BaseCommand {
             final World world = location.getWorld();
             assert world != null;
             final String worldName = messageBuilder.getBase("worldNames." + world.getName()).execute();
-            System.out.println(worldName);
-            System.out.println(world);
             messages.add(messageBuilder.getBase("limits.locateBlock")
                     .usingTemplate("x", String.valueOf(location.getBlockX()))
                     .usingTemplate("y", String.valueOf(location.getBlockY()))

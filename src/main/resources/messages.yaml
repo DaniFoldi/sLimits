@@ -4,9 +4,9 @@ limits:
   locate: '§7§l---=== §6Lehelyezett {material} blokkjaid §7===---'
   locateBlock: '§6x §7 {x}, §6y §7{y}, §6z §7{z}, §6világ §7{world}'
 event:
-  blockPlaced: '§7Lehelyeztél egy {material} blokkot, §r{color}{count}§7/§5{limit}.'
-  blockRemoved: '§6Kiütöttél egy {material} blokkot, §r{color}{count}§7/§5{limit}.'
-  limitReached: '§cElérted a maximálisan lehelyezhető {material} blokkok számát: {limit}.'
+  blockPlaced: '§7Lehelyeztél egy {material} blokkot, §r{color}{count}§7/§5{limit}§7.'
+  blockRemoved: '§7Kiütöttél egy {material} blokkot, §r{color}{count}§7/§5{limit}§7.'
+  limitReached: '§cElérted a maximálisan lehelyezhető {material} blokkok számát - {limit}.'
   removeOtherFail: '§cEzt a blokkot {player} helyezte le, nem ütheted ki.'
   removeOtherSuccess: '§7Kiütötted {player} egy blokkját.'
 gui:

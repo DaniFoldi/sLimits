@@ -4,6 +4,7 @@ import be.seeseemelk.mockbukkit.MockBukkit;
 import be.seeseemelk.mockbukkit.ServerMock;
 import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import com.danifoldi.messagelib.core.MessageBuilder;
+import com.danifoldi.messagelib.core.SimpleMessageBuilder;
 import com.danifoldi.messagelib.messageprovider.MessageProvider;
 import com.danifoldi.messagelib.templateprocessor.TemplateProcessor;
 import com.danifoldi.messagelib.yaml.YamlMessageProvider;
@@ -60,7 +61,7 @@ class BlockPlacementLimitTest {
 
         try {
             MessageProvider<String> messageProvider = new YamlMessageProvider(Paths.get("src/test/resources", "messages.yaml"));
-            MessageBuilder<String> messageBuilder = new MessageBuilder<>(messageProvider, TemplateProcessor.bracket());
+            MessageBuilder<String, String> messageBuilder = new SimpleMessageBuilder<>(messageProvider, TemplateProcessor.bracket());
 
             limit = new BlockPlacementLimit(limitsManager, messageBuilder);
             plugin.registerEvents(limit);

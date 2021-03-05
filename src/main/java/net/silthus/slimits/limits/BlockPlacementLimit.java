@@ -39,12 +39,11 @@ public class BlockPlacementLimit implements Listener {
 
         Material blockType = event.getBlock().getType();
         if (playerLimit.hasReachedLimit(blockType)) {
-            event.getPlayer().sendMessage(messageBuilder.getBase("event.limitReachead")
+            event.getPlayer().sendMessage(messageBuilder.getBase("event.limitReached")
                     .usingTemplate("limit", String.valueOf(playerLimit.getLimit(blockType).orElse(0)))
                     .usingTemplate("material", messageBuilder.getBase("materialNames." + blockType.name()).execute())
             .execute());
             event.setCancelled(true);
-            return;
         }
     }
 
@@ -64,7 +63,7 @@ public class BlockPlacementLimit implements Listener {
             int placedBlockAmount = playerLimit.addBlock(block);
             getLimitsManager().savePlayerLimits(player);
 
-            double usage = placedBlockAmount * 100.0 / limit * 100.0;
+            double usage = placedBlockAmount * 100.0 / (limit * 100.0);
             ChatColor color = ChatColor.GREEN;
             if (usage >= 95) {
                 color = ChatColor.RED;
@@ -118,7 +117,7 @@ public class BlockPlacementLimit implements Listener {
             int newCount = playerLimit.removeBlock(event.getBlock());
             getLimitsManager().savePlayerLimits(event.getPlayer());
 
-            double usage = newCount * 100.0 / limit * 100.0;
+            double usage = newCount * 100.0 / (limit * 100.0);
             ChatColor color = ChatColor.GREEN;
             if (usage >= 95) {
                 color = ChatColor.RED;
