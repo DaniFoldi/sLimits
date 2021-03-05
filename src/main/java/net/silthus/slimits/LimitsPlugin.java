@@ -5,11 +5,11 @@ import com.danifoldi.messagelib.core.MessageBuilder;
 import com.danifoldi.messagelib.core.SimpleMessageBuilder;
 import com.danifoldi.messagelib.messageprovider.MessageProvider;
 import com.danifoldi.messagelib.templateprocessor.TemplateProcessor;
-import com.danifoldi.messagelib.yaml.YamlMessageProvider;
 import kr.entree.spigradle.annotations.Plugin;
 import lombok.Getter;
 import net.silthus.slib.bukkit.BasePlugin;
 import net.silthus.slimits.commands.LimitsCommand;
+import net.silthus.slimits.config.CustomMessageProvider;
 import net.silthus.slimits.ui.LimitsGUI;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.event.Listener;
@@ -66,7 +66,7 @@ public class LimitsPlugin extends BasePlugin implements Listener {
                 }
             }
 
-            MessageProvider<String> messageProvider = new YamlMessageProvider(messageFile);
+            MessageProvider<String> messageProvider = new CustomMessageProvider(messageFile);
             this.messageBuilder = new SimpleMessageBuilder<>(messageProvider, TemplateProcessor.bracket());
         } catch (IOException e) {
             System.out.println("File not found:" + e.getMessage());
