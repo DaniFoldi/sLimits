@@ -112,7 +112,12 @@ public class PlayerBlockPlacementLimit {
     }
 
     public Optional<Integer> getLimit(Material blockType) {
-        return Optional.ofNullable(getLimits().get(blockType));
+        Material b = blockType;
+        if (blockType.equals(Material.PLAYER_WALL_HEAD)) {
+            b = Material.PLAYER_HEAD;
+        }
+
+        return Optional.ofNullable(getLimits().get(b));
     }
 
     public int addBlock(Block block) {
@@ -130,10 +135,15 @@ public class PlayerBlockPlacementLimit {
     }
 
     public int getCount(Material blockType) {
-        if (!getCounts().containsKey(blockType)) {
-            getCounts().put(blockType, 0);
+        Material b = blockType;
+        if (blockType.equals(Material.PLAYER_WALL_HEAD)) {
+            b = Material.PLAYER_HEAD;
         }
-        return counts.getOrDefault(blockType, 0);
+
+        if (!getCounts().containsKey(b)) {
+            getCounts().put(b, 0);
+        }
+        return counts.getOrDefault(b, 0);
     }
 
     public boolean hasPlacedBlock(Block block) {
@@ -142,7 +152,12 @@ public class PlayerBlockPlacementLimit {
     }
 
     public List<Location> getLocations(Material material) {
-        return blockLocations.getOrDefault(material, new ArrayList<>());
+        Material b = material;
+        if (material.equals(Material.PLAYER_WALL_HEAD)) {
+            b = Material.PLAYER_HEAD;
+        }
+
+        return blockLocations.getOrDefault(b, new ArrayList<>());
     }
 
     public int removeBlock(Block block) {
@@ -175,10 +190,15 @@ public class PlayerBlockPlacementLimit {
     }
 
     public boolean hasReachedLimit(Material blockType) {
+        Material b = blockType;
+        if (blockType.equals(Material.PLAYER_WALL_HEAD)) {
+            b = Material.PLAYER_HEAD;
+        }
 
-        Optional<Integer> limit = getLimit(blockType);
+        Optional<Integer> limit = getLimit(b);
 
-        return limit.filter(integer -> getCount(blockType) >= integer).isPresent();
+        final Material finalB = b;
+        return limit.filter(integer -> getCount(finalB) >= integer).isPresent();
     }
 
     private void addPermissions(BlockPlacementLimitConfig config) {
