@@ -121,14 +121,19 @@ public class PlayerBlockPlacementLimit {
     }
 
     public int addBlock(Block block) {
-        if (hasPlacedBlock(block)) {
-            return getCount(block.getType());
+        Material b = block.getType();
+        if (b.equals(Material.PLAYER_WALL_HEAD)) {
+            b = Material.PLAYER_HEAD;
         }
 
-        int currentCount = getCount(block.getType());
+        if (hasPlacedBlock(block)) {
+            return getCount(b);
+        }
+
+        int currentCount = getCount(b);
         currentCount++;
 
-        counts.put(block.getType(), currentCount);
+        counts.put(b, currentCount);
         addBlockLocation(block);
 
         return currentCount;
@@ -147,8 +152,12 @@ public class PlayerBlockPlacementLimit {
     }
 
     public boolean hasPlacedBlock(Block block) {
+        Material b = block.getType();
+        if (b.equals(Material.PLAYER_WALL_HEAD)) {
+            b = Material.PLAYER_HEAD;
+        }
 
-        return getLocations(block.getType()).contains(block.getLocation());
+        return getLocations(b).contains(block.getLocation());
     }
 
     public List<Location> getLocations(Material material) {
@@ -162,27 +171,35 @@ public class PlayerBlockPlacementLimit {
 
     public int removeBlock(Block block) {
 
-        Material blockType = block.getType();
-        int count = getCount(blockType);
+        Material b = block.getType();
+        if (b.equals(Material.PLAYER_WALL_HEAD)) {
+            b = Material.PLAYER_HEAD;
+        }
+
+        int count = getCount(b);
 
         if (removeBlockLocation(block)) {
             count--;
-            getCounts().put(blockType, count);
+            getCounts().put(b, count);
         }
 
         if (count < 0) {
             count = 0;
-            getCounts().remove(blockType);
+            getCounts().remove(b);
         }
 
         return count;
     }
 
     public boolean isApplicable(Player player, Block block) {
+        Material b = block.getType();
+        if (b.equals(Material.PLAYER_WALL_HEAD)) {
+            b = Material.PLAYER_HEAD;
+        }
 
-        boolean isLimitedBlock = getLimits().containsKey(block.getType());
+        boolean isLimitedBlock = getLimits().containsKey(b);
         boolean hasPermission = getBlockTypePermissions()
-                .getOrDefault(block.getType(), new HashSet<>()).stream()
+                .getOrDefault(b, new HashSet<>()).stream()
                 .anyMatch(player::hasPermission);
         boolean isExcluded = player.hasPermission(Constants.PERMISSION_EXCLUDE_FROM_LIMITS);
 
@@ -220,14 +237,22 @@ public class PlayerBlockPlacementLimit {
     }
 
     private void addBlockLocation(Block block) {
-
-        if (!blockLocations.containsKey(block.getType())) {
-            blockLocations.put(block.getType(), new ArrayList<>());
+        Material b = block.getType();
+        if (b.equals(Material.PLAYER_WALL_HEAD)) {
+            b = Material.PLAYER_HEAD;
         }
-        blockLocations.get(block.getType()).add(block.getLocation());
+
+        if (!blockLocations.containsKey(b)) {
+            blockLocations.put(b, new ArrayList<>());
+        }
+        blockLocations.get(b).add(block.getLocation());
     }
 
     private boolean removeBlockLocation(Block block) {
-        return blockLocations.getOrDefault(block.getType(), new ArrayList<>()).remove(block.getLocation());
+        Material b = block.getType();
+        if (b.equals(Material.PLAYER_WALL_HEAD)) {
+            b = Material.PLAYER_HEAD;
+        }
+        return blockLocations.getOrDefault(b, new ArrayList<>()).remove(b);
     }
 }

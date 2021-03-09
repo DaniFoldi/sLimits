@@ -28,3 +28,4 @@ worldNames:
   world_x55: '55x55-ös telkek'
 materialNames:
   PLAYER_HEAD: 'Player fej'
+  PLAYER_WALL_HEAD: 'Player fej'
